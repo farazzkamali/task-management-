@@ -39,30 +39,41 @@ export class AuthenticationService {
     
             await this.usersRepository.save(user)            
         } catch (error) {
-            throw error
+            if (error instanceof BadRequestException) {
+                throw error
+            }
+            throw new Error('Error while sign up')
         }
 
     }
 
 
     async signIn(signInDto: SignInDto){
-        const user = await this.usersRepository
-        .createQueryBuilder('user')
-        .addSelect('user.password')
-        .where('user.email = :email', { email: signInDto.email })
-        .getOne();
+        try {
+            const user = await this.usersRepository
+            .createQueryBuilder('user')
+            .addSelect('user.password')
+            .where('user.email = :email', { email: signInDto.email })
+            .getOne();
+    
+    
+            
+            if (!user) {
+                throw new UnauthorizedException('User does not exists')
+            }
+            const isEqual = await this.hashingService.compare(signInDto.password, user.password)
+            
+            if (!isEqual) {
+                throw new UnauthorizedException("Password Does not match")
+            }
+            return await this.generateTokens(user);
+        } catch (error) {
+            if (error instanceof  UnauthorizedException) {
+                throw error
+            }
+            throw new Error('Error while sign in')
+        }
 
-       // const user = await this.usersRepository.findOneBy({email:signInDto.email})
-        
-        if (!user) {
-            throw new UnauthorizedException('User does not exists')
-        }
-        const isEqual = await this.hashingService.compare(signInDto.password, user.password)
-        
-        if (!isEqual) {
-            throw new UnauthorizedException("Password Does not match")
-        }
-        return await this.generateTokens(user);
     }
 
 
