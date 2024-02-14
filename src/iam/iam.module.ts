@@ -11,6 +11,8 @@ import jwtConfig from './config/jwt.config';
 import { BcryptService } from './hashing/bcrypt.service';
 import { HashingService } from './hashing/hashing.service';
 import { AccessTokenGuard } from './authentication/guards/access-token/access-token.guard';
+import { RefreshTokenIdsStorage } from './authentication/refresh-token-ids.storage/refresh-token-ids.storage';
+import { RolesGuard } from './authorization/guards/roles/roles.guard';
 
 @Module({
   imports:[
@@ -27,7 +29,12 @@ import { AccessTokenGuard } from './authentication/guards/access-token/access-to
     provide:APP_GUARD,
     useClass: AuthenticationGuard
   },
+  {
+    provide:APP_GUARD,
+    useClass:RolesGuard
+  },
   AccessTokenGuard,
+  RefreshTokenIdsStorage,
   AuthenticationService
 ],
   controllers: [AuthenticationController]

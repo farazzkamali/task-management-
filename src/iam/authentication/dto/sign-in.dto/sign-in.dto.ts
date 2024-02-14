@@ -7,3 +7,4 @@ export class SignInDto {
     @MinLength(10)
     password:string;
 }
+

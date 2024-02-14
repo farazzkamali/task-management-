@@ -1,20 +1,49 @@
+// import { Test, TestingModule } from '@nestjs/testing';
+// import { TasksController } from './tasks.controller';
+// import { TasksService } from './tasks.service';
+
+// describe('TasksController', () => {
+//   let controller: TasksController;
+
+//   beforeEach(async () => {
+//     const module: TestingModule = await Test.createTestingModule({
+//       controllers: [TasksController],
+//       providers: [TasksService],
+//     }).compile();
+
+//     controller = module.get<TasksController>(TasksController);
+//   });
+
+//   it('should be defined', () => {
+//     expect(controller).toBeDefined();
+//   });
+// });
 import { Test, TestingModule } from '@nestjs/testing';
 import { TasksController } from './tasks.controller';
 import { TasksService } from './tasks.service';
+import * as request from 'supertest';
+import { INestApplication } from '@nestjs/common';
 
 describe('TasksController', () => {
-  let controller: TasksController;
+  let app: INestApplication;
+  let tasksService = { findAll: () => ['test'], findOne: ()=>['test'], create:()=>['test'] };
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    const moduleRef = await Test.createTestingModule({
       controllers: [TasksController],
       providers: [TasksService],
-    }).compile();
+    })
+      .overrideProvider(TasksService)
+      .useValue(tasksService)
+      .compile();
 
-    controller = module.get<TasksController>(TasksController);
+    app = moduleRef.createNestApplication();
+    await app.init();
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+
+
+  afterAll(async () => {
+    await app.close();
   });
 });

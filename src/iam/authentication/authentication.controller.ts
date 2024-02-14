@@ -5,8 +5,10 @@ import { SignInDto } from './dto/sign-in.dto/sign-in.dto';
 import { Auth } from './decorators/auth.decorator';
 import { AuthType } from '../enums/auth-type.enum';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 
+@ApiTags('Authentication')
 @Auth(AuthType.None)
 @Controller('authentication')
 export class AuthenticationController {
