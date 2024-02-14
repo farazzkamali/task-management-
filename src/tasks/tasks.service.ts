@@ -5,6 +5,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './entities/task.entity';
 import { User } from '../users/entities/user.entity';
+import { ActiveUserData } from 'src/iam/interfaces/active-user-data.interface';
 
 @Injectable()
 export class TasksService {
